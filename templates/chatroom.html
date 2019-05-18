@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Simple Chat</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
+  <!-- Custom fonts -->
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='sb-admin-2.min.css') }}">
+  <link href="static/startbootstrap-sb-admin-2-gh-pages/css/sb-admin-2.min.css" rel="stylesheet">
+</head>
+<body>
+
+  <h3 style='color: #ccc;font-size: 30px;'>No message yet..</h3>
+  <!-- <div class="message_holder"></div> -->
+  <!-- Begin Page Content -->
+  <div class="container-fluid message_holder">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+      <h1 class="h3 mb-0 text-gray-800">Cards</h1>
+    </div>
+  </div>
+
+  <form action="" method="POST">
+    <input type="text" class="username" placeholder="User Name"/>
+    <!-- <input type="text" class="message" placeholder="Messages"/> -->
+    <div class=" mr-auto ml-md-3 my-2 mw-100 navbar-search">
+        <div class="input-group">
+          <input type="text" class="form-control bg-light" placeholder="Send a message..." aria-label="Search" aria-describedby="basic-addon2">
+          <div class="input-group-append">
+            <button class="btn btn-primary" type="button">
+              <i class="fas fa-search fa-sm"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    <input type="submit" href="#" class="btn btn-primary btn-icon-split btn-lg "></input>
+
+  </form>
+
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
+  <script type="text/javascript">
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
+    socket.on( 'connect', function() {
+      socket.emit( 'my event', {
+        data: 'User Connected'
+      } )
+      var form = $( 'form' ).on( 'submit', function( e ) {
+        e.preventDefault()
+        let user_name = $( 'input.username' ).val()
+        let user_input = $( 'input.message' ).val()
+        socket.emit( 'my event', {
+          user_name : user_name,
+          message : user_input
+        } )
+        $( 'input.message' ).val( '' ).focus()
+      } )
+    } )
+    socket.on( 'my response', function( msg ) {
+      console.log( msg )
+      if( typeof msg.user_name !== 'undefined' ) {
+        $( 'h3' ).remove()
+        $( 'div.message_holder' ).append( 
+              '<div class="row"><div class="col-xl-3 col-md-6 mb-4"><div class="card border-left-primary shadow h-100 py-2"><div class="row no-gutters align-items-center"><div class="col mr-2"><div class="text-xs font-weight-bold text-primary text-uppercase mb-1">' + msg.user_name + '</div><div class="h5 mb-0 font-weight-bold text-gray-800">' + msg.message + '</div></div></div></div></div></div></div>'
+
+              // '<div class="card-body"><b style="color: #000">'+msg.user_name+'</b> '+msg.message+'</div>'
+
+          )
+      }
+    })
+  </script>
+
+</body>
+</html>

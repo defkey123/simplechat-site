@@ -6,8 +6,12 @@ app.config['SECRET_KEY'] = 'vnkdjnfjknfl1232#'
 socketio = SocketIO(app)
 
 @app.route('/')
-def sessions():
-    return render_template('session.html')
+def new_job():
+        return render_template('new_chat.html')
+
+@app.route('/<chatroomid>')
+def join_chatroom(chatroomid):
+    return render_template('chatroom.html')
 
 def messageReceived(methods=['GET', 'POST']):
     print('message was received!')
